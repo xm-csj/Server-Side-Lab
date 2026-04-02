@@ -9,13 +9,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String method = request.getMethod();
         String uri = request.getRequestURI();
+        boolean isRegister = "POST".equalsIgnoreCase(request.getMethod()) && "/api/users".equals(uri);
+        boolean isLogin = "POST".equalsIgnoreCase(request.getMethod()) && "/api/users/login".equals(uri);
 
-        boolean isCreateUser = "POST".equalsIgnoreCase(method) && "/api/users".equals(uri);
-        boolean isGetUser = "GET".equalsIgnoreCase(method) && uri.startsWith("/api/users/");
-
-        if (isCreateUser || isGetUser) {
+        if (isRegister || isLogin) {
             return true;
         }
 

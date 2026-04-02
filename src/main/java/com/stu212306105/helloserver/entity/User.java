@@ -1,27 +1,30 @@
 package com.stu212306105.helloserver.entity;
 
-public class User {
-    private String name;
-    private Long id;
-    private Integer age;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
+@TableName("sys_user") // 映射数据库的 sys_user 表
+public class User {
+
+    @TableId(type = IdType.AUTO) // 设置 id 为自增主键
+    private Long id;
+
+    private String username;
+    private String password;
+
+    // 无参构造函数（MyBatis-Plus 必须要求有这个）
     public User() {
     }
 
-    public User(String name, Long id, Integer age) {
-        this.name = name;
+    // 全参构造函数
+    public User(Long id, String username, String password) {
         this.id = id;
-        this.age = age;
+        this.username = username;
+        this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    // Getters 和 Setters
     public Long getId() {
         return id;
     }
@@ -30,11 +33,19 @@ public class User {
         this.id = id;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
