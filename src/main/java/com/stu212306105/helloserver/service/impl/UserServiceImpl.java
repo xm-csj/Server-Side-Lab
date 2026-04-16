@@ -1,6 +1,7 @@
 package com.stu212306105.helloserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.stu212306105.helloserver.common.Result;
 import com.stu212306105.helloserver.common.ResultCode;
 import com.stu212306105.helloserver.dto.UserDTO;
@@ -27,11 +28,9 @@ public class UserServiceImpl implements UserService {
         if (dbUser != null) {
             return Result.error(ResultCode.USER_HAS_EXISTED);
         }
-
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
-
         userMapper.insert(user);
         return Result.success("注册成功!");
     }
@@ -45,11 +44,9 @@ public class UserServiceImpl implements UserService {
         if (dbUser == null) {
             return Result.error(ResultCode.USER_NOT_EXIST);
         }
-
         if (!dbUser.getPassword().equals(userDTO.getPassword())) {
             return Result.error(ResultCode.PASSWORD_ERROR);
         }
-
         String token = UUID.randomUUID().toString();
         return Result.success(token);
     }
@@ -61,5 +58,12 @@ public class UserServiceImpl implements UserService {
             return Result.error(ResultCode.USER_NOT_EXIST);
         }
         return Result.success("找到用户: " + user.getUsername());
+    }
+
+    @Override
+    public Result<Object> getUserPage(Integer pageNum, Integer pageSize) {
+        Page<User> pageParam = new Page<>(pageNum, pageSize);
+        Page<User> resultPage = userMapper.selectPage(pageParam, null);
+        return Result.success(resultPage);
     }
 }
