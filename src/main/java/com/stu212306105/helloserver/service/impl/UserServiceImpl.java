@@ -8,6 +8,7 @@ import com.stu212306105.helloserver.common.ResultCode;
 import com.stu212306105.helloserver.dto.UserDTO;
 import com.stu212306105.helloserver.entity.User;
 import com.stu212306105.helloserver.entity.UserInfo;
+import com.stu212306105.helloserver.example.demo.security.JwtUtil;
 import com.stu212306105.helloserver.mapper.UserInfoMapper;
 import com.stu212306105.helloserver.mapper.UserMapper;
 import com.stu212306105.helloserver.service.UserService;
@@ -17,7 +18,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -31,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private static final String CACHE_KEY_PREFIX = "user:detail:";
 
@@ -53,7 +56,9 @@ public class UserServiceImpl implements UserService {
         User dbUser = userMapper.selectOne(queryWrapper);
         if (dbUser == null) return Result.error(ResultCode.USER_NOT_EXIST);
         if (!dbUser.getPassword().equals(userDTO.getPassword())) return Result.error(ResultCode.PASSWORD_ERROR);
-        return Result.success(UUID.randomUUID().toString());
+
+        String jwt = jwtUtil.generateToken(userDTO.getUsername());
+        return Result.success(jwt);
     }
 
     @Override
@@ -93,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Result<String> updateUserInfo(UserInfo userInfo) {
         if (userInfo == null || userInfo.getUserId() == null) {
-            return Result.error(ResultCode.USER_NOT_EXIST); // 修复了报错的 PARAM_ERROR
+            return Result.error(ResultCode.USER_NOT_EXIST);
         }
         LambdaQueryWrapper<UserInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UserInfo::getUserId, userInfo.getUserId());

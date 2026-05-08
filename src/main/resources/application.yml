@@ -4,13 +4,17 @@ spring:
     username: postgres
     password: 123456
     driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
 
 mybatis-plus:
   configuration:
-    map-underscore-to-camel-case: true # ?????????? (?? user_name ????? userName)
+    map-underscore-to-camel-case: true
 
-    data:
-      redis:
-        host: 127.0.0.1
-        port: 6379
-        database: 0
+security:
+  jwt:
+    secret: demo-jwt-secret-key-for-spring-security-2026
+    expiration-millis: 7200000
